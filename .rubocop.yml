@@ -6,3 +6,5 @@ AllCops:
   NewCops: enable
 Style/Documentation:
   Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
