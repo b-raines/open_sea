@@ -14,13 +14,9 @@ module OpenSea
         owner
         last_sale
         listing_date
+        traits
       ]
     end
     # rubocop:enable Metrics/MethodLength
-
-    def initialize(json)
-      super
-      attributes['traits'] = json['traits'].map { |trait| Trait.new(trait) }
-    end
   end
 end

@@ -18,13 +18,9 @@ module OpenSea
         traits
         payment_tokens
         editors
+        stats
       ]
     end
     # rubocop:enable Metrics/MethodLength
-
-    def initialize(json)
-      super
-      attributes['stats'] = Stats.new(json['stats'])
-    end
   end
 end

@@ -7,6 +7,4 @@ module OpenSea
   autoload :Asset, 'open_sea/asset'
   autoload :BaseModel, 'open_sea/base_model'
   autoload :Collection, 'open_sea/collection'
-  Collection.autoload :Stats, 'open_sea/collection/stats'
-  Asset.autoload :Trait, 'open_sea/asset/trait'
 end
