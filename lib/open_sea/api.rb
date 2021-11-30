@@ -17,7 +17,7 @@ module OpenSea
         request = Net::HTTP::Get.new(url)
 
         response = http.request(request)
-        OpenSea::Collection.new(JSON.parse(response.read_body)["collection"])
+        OpenSea::Collection.new(JSON.parse(response.read_body)['collection'])
       end
 
       def assets(collection:, limit: 50, page: 0, autopaging: false)
@@ -29,16 +29,17 @@ module OpenSea
         request = Net::HTTP::Get.new(url)
 
         response = http.request(request)
-        _assets = JSON.parse(response.read_body)["assets"].map do |asset|
+        _assets = JSON.parse(response.read_body)['assets'].map do |asset|
           OpenSea::Asset.new(asset)
         end
 
-        if autopaging && block_given?
-          yield assets
-          assets(collection: collection, limit: limit, page: page + 1, autopaging: true)
-        else
-          _assets
+        if autopaging
+          until _assets.count % limit != 0
+            _assets << assets(collection: collection, limit: limit, page: page + 1, autopaging: true)
+          end
         end
+
+        _assets
       end
     end
   end

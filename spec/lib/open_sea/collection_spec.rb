@@ -2,7 +2,7 @@
 
 describe OpenSea::Collection do
   it 'initializes properly with valid json response' do
-    collection_json = JSON.parse(File.read("#{Dir.pwd}/spec/json/open_sea/collection.json"))["collection"]
+    collection_json = JSON.parse(File.read("#{Dir.pwd}/spec/json/open_sea/collection.json"))['collection']
     collection = described_class.new(collection_json)
     expect(collection.name).to eq 'Doodles'
     expect(collection.external_url).to eq 'https://doodles.app'

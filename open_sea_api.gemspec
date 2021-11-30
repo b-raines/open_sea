@@ -22,4 +22,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop-performance', '~> 1.12'
   s.add_development_dependency 'rubocop-rspec', '~> 2.6'
   s.add_development_dependency 'webmock', '~> 3.14'
+  s.metadata = {
+    'rubygems_mfa_required' => 'true'
+  }
 end

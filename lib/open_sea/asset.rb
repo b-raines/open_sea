@@ -20,7 +20,7 @@ module OpenSea
 
     def initialize(json)
       super
-      attributes["traits"] = json["traits"].map { |trait| Trait.new(trait) }
+      attributes['traits'] = json['traits'].map { |trait| Trait.new(trait) }
     end
   end
 end
