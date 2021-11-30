@@ -34,8 +34,10 @@ module OpenSea
         end
 
         if autopaging
-          until _assets.count % limit != 0
-            _assets << assets(collection: collection, limit: limit, page: page + 1, autopaging: true)
+          yield _assets
+
+          if _assets.count % limit != 0
+            assets(collection: collection, limit: limit, page: page + 1, autopaging: true)
           end
         end
 
