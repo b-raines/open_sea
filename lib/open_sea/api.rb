@@ -33,13 +33,14 @@ module OpenSea
           OpenSea::Asset.new(asset)
         end
 
-        if autopaging
-          yield _assets
+        # TODO
+        # if autopaging
+        #   yield _assets
 
-          if _assets.count % limit != 0
-            assets(collection: collection, limit: limit, page: page + 1, autopaging: true)
-          end
-        end
+        #   if _assets.count % limit != 0
+        #     assets(collection: collection, limit: limit, page: page + 1, autopaging: true)
+        #   end
+        # end
 
         _assets
       end
