@@ -9,40 +9,34 @@ module OpenSea
   class Api
     class << self
       def collection(title:)
-        url = URI("#{OpenSea::BASE_URI}/collection/#{title}")
-
-        http = Net::HTTP.new(url.host, url.port)
-        http.use_ssl = true
-
-        request = Net::HTTP::Get.new(url)
-
-        response = http.request(request)
+        response = get("/collection/#{title}")
         OpenSea::Collection.new(JSON.parse(response.read_body)['collection'])
       end
 
-      def assets(collection:, limit: 50, page: 0, autopaging: false)
-        url = URI("#{OpenSea::BASE_URI}/assets?collection=#{collection}&limit=#{limit}&offset=#{page}")
-
-        http = Net::HTTP.new(url.host, url.port)
-        http.use_ssl = true
-
-        request = Net::HTTP::Get.new(url)
-
-        response = http.request(request)
+      def assets(collection:, limit: 50, page: 0)
+        response = get(url: "/assets?collection=#{collection}&limit=#{limit}&offset=#{page}")
         _assets = JSON.parse(response.read_body)['assets'].map do |asset|
           OpenSea::Asset.new(asset)
         end
 
-        # TODO
-        # if autopaging
-        #   yield _assets
-
-        #   if _assets.count % limit != 0
-        #     assets(collection: collection, limit: limit, page: page + 1, autopaging: true)
-        #   end
-        # end
-
         _assets
+      end
+
+      def asset(contract_address:, token_id:)
+        response = get(url: "/asset/#{contract_address}/#{token_id}")
+        OpenSea::Asset.new(JSON.parse(response.read_body))
+      end
+
+      private
+
+      def get(url:)
+        url = URI("#{OpenSea::BASE_URI}#{url}")
+
+        http = Net::HTTP.new(url.host, url.port)
+        http.use_ssl = true
+
+        request = Net::HTTP::Get.new(url)
+        http.request(request)
       end
     end
   end
