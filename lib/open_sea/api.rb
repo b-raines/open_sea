@@ -13,13 +13,22 @@ module OpenSea
         OpenSea::Collection.new(JSON.parse(response.read_body)['collection'])
       end
 
-      def assets(collection:, limit: 50, page: 0)
-        response = get(url: "/assets?collection=#{collection}&limit=#{limit}&offset=#{page}")
-        _assets = JSON.parse(response.read_body)['assets'].map do |asset|
+      def assets(collection: '', contract_address: '', token_ids: [], limit: 50, page: 0)
+        if (collection.nil? || collection.empty?) && (contract_address.nil? || contract_address.empty?)
+          raise StandardError, 'Invalid Arguments'
+        end
+        query_string = URI.encode_www_form({
+          collection: collection,
+          asset_contract_address: contract_address,
+          token_ids: token_ids,
+          limit: limit,
+          offset: page,
+        })
+
+        response = get(url: "/assets?#{query_string}")
+        JSON.parse(response.read_body)['assets'].map do |asset|
           OpenSea::Asset.new(asset)
         end
-
-        _assets
       end
 
       def asset(contract_address:, token_id:)
