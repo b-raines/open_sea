@@ -8,5 +8,17 @@ module OpenSea
   autoload :BaseModel, 'open_sea/base_model'
   autoload :Collection, 'open_sea/collection'
 
-  class ApiError < StandardError; end
+  class InvalidArgumentError < StandardError; end
+  class ApiError < StandardError
+    attr_reader :response
+
+    def initialize(response)
+      @response = response
+    end
+
+    def message
+      errors = JSON.parse(response.body).map { |k, v| "#{k}: #{v}" }.join(", ")
+      "#{response.code} #{response.message}: #{errors}"
+    end
+  end
 end
