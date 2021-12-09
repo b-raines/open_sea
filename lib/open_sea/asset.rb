@@ -29,5 +29,9 @@ module OpenSea
         @attributes["owner"] = top_owner if top_owner
       end
     end
+
+    def valid?
+      !!((token_id && token_id.length > 0) && (asset_contract && asset_contract.length > 0))
+    end
   end
 end
