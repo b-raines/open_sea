@@ -26,7 +26,7 @@ module OpenSea
         })
 
         response = get(url: "/assets?#{query_string}")
-        JSON.parse(response.read_body)['assets'].map do |asset|
+        JSON.parse(response.read_body).fetch('assets', []).map do |asset|
           OpenSea::Asset.new(asset)
         end
       end
