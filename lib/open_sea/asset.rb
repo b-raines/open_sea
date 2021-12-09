@@ -11,12 +11,22 @@ module OpenSea
         name
         external_link
         asset_contract
-        owner
         last_sale
         listing_date
+        owner
         traits
       ]
     end
     # rubocop:enable Metrics/MethodLength
+
+    def initialize(json)
+      super
+
+      # Weird hack required bc OpenSea doesn't seem to be updating the #owner
+      if @attributes.dig("owner", "user", "username") == "NullAddress"
+        json = JSON.parse(json) if json.is_a?(String)
+        @attributes["owner"] = json["top_ownerships"].first&.fetch("owner", {})
+      end
+    end
   end
 end
