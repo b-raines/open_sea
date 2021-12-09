@@ -25,7 +25,8 @@ module OpenSea
       # Weird hack required bc OpenSea doesn't seem to be updating the #owner
       if @attributes.dig("owner", "user", "username") == "NullAddress"
         json = JSON.parse(json) if json.is_a?(String)
-        @attributes["owner"] = json["top_ownerships"].first&.fetch("owner", {})
+        top_owner = json["top_ownerships"].first&.fetch("owner", {})
+        @attributes["owner"] = top_owner if top_owner
       end
     end
   end
