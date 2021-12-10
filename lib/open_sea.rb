@@ -7,6 +7,15 @@ module OpenSea
   autoload :Asset, 'open_sea/asset'
   autoload :BaseModel, 'open_sea/base_model'
   autoload :Collection, 'open_sea/collection'
+  autoload :Configuration, 'open_sea/configuration'
+
+  def self.configure
+    yield self.config
+  end
+
+  def self.config
+    @@config ||= Configuration.new
+  end
 
   class InvalidArgumentError < StandardError; end
   class ApiError < StandardError

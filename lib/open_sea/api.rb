@@ -51,7 +51,7 @@ module OpenSea
         http.use_ssl = true
 
         request = Net::HTTP::Get.new(url)
-        request['X-API-KEY'] = api_key if api_key
+        request['X-API-KEY'] = OpenSea.config.api_key
         response = http.request(request)
         raise ApiError.new(response) unless success?(response)
         response
