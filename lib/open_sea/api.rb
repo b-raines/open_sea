@@ -8,12 +8,22 @@ require 'json'
 module OpenSea
   class Api
     class << self
-      def collection(title:)
-        response = get("/collection/#{title}")
+      def collection(slug: nil, contract_address: nil)
+        if slug && !slug.empty?
+          response = get("/collection/#{slug}")
+        elsif contract_address && !contract_address.empty?
+          response = get("/asset_contract/#{contract_address}")
+        else
+          raise InvalidArgumentError, 'Must supply either slug or contract_address'
+        end
+
         OpenSea::Collection.new(JSON.parse(response.read_body)['collection'])
+
+      rescue => e
+        pp e.message
       end
 
-      def assets(collection: '', contract_address: '', token_ids: [], limit: 50, page: 0)
+      def assets(collection: nil, contract_address: nil, token_ids: [], limit: 50, page: 0)
         if (collection.nil? || collection.empty?) && (contract_address.nil? || contract_address.empty?)
           raise InvalidArgumentError, 'Must supply either collection slug or contract_address'
         end
@@ -26,7 +36,7 @@ module OpenSea
           offset: page,
         })
 
-        response = get(url: "/assets?#{query_string}")
+        response = get("/assets?#{query_string}")
 
         JSON.parse(response.read_body).fetch('assets', []).map do |asset|
           OpenSea::Asset.new(asset)
@@ -34,7 +44,7 @@ module OpenSea
       end
 
       def asset(contract_address:, token_id:)
-        response = get(url: "/asset/#{contract_address}/#{token_id}")
+        response = get("/asset/#{contract_address}/#{token_id}")
         OpenSea::Asset.new(JSON.parse(response.read_body))
       end
 
@@ -44,8 +54,9 @@ module OpenSea
         response.code.match?(/2\d\d/)
       end
 
-      def get(url:)
+      def get(url)
         url = URI("#{OpenSea::BASE_URI}#{url}")
+        pp url
 
         http = Net::HTTP.new(url.host, url.port)
         http.use_ssl = true
