@@ -9,13 +9,15 @@ module OpenSea
   class Api
     class << self
       def collection(slug: nil, contract_address: nil)
-        if slug && !slug.empty?
-          response = get("/collection/#{slug}")
-        elsif contract_address && !contract_address.empty?
-          response = get("/asset_contract/#{contract_address}")
-        else
-          raise InvalidArgumentError, 'Must supply either slug or contract_address'
+        # Requires two requests, bc OpenSea doesn't return full collection stats w/ contract endpoint
+        if contract_address && !contract_address.empty?
+          contract = get("/asset_contract/#{contract_address}")
+          slug = JSON.parse(contract.read_body).dig('collection', 'slug')
         end
+
+        raise InvalidArgumentError, 'Must supply either slug or contract_address' if !slug || slug.empty?
+
+        response = get("/collection/#{slug}")
 
         OpenSea::Collection.new(JSON.parse(response.read_body)['collection'])
 
